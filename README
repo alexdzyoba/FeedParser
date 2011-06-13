@@ -1,0 +1,21 @@
+I read a lot. I have about 100 RSS/Atom subscriptions, that i read every day.
+It helps me to have actual knowledge and have fun. All feeds i read in google 
+reader. However i didn’t like it much from the beginning because of small 
+viewport. If you open google reader on small 1024×600 netbook screen you’ll 
+understand what i’m talking about. For example, it’s really impossible to 
+view photos.
+
+That’s why i’ve decided to write my own reader and get practice in PHP/Yii.
+
+So, if you want to read RSS/Atom, you have to parse it somehow. At first i 
+wanted to use something already done and found XML_Feed_Parser library by 
+James Stewart at PEAR. I’ve tried to fit it under my code, but despite all 
+benefits, it wasn’t so “unified” as it was told in description. And 
+that’s why I wrote my own library, based on James's work.
+
+Source code distributed under terms of LGPLv3. Documentation for sources, made
+with help of doxygen, you can see at http://finger.reduct.ru/FeedParserDocs
+
+If you have any questions, suggestions or anything else – write me email to 
+finger@reduct.ru or ask through github.
+
