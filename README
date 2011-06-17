@@ -1,3 +1,41 @@
+>>>>>  Example of usage in feed.php file
+
+
+	[[[::: About :::]]]
+
+FeedParser is a PHP library that handles all types of XML feeds. 
+
+It supports:
+ * RSS 0.90
+ * RSS 1.0
+ * RSS 1.1
+ * RSS 0.91
+ * RSS 0.92
+ * RSS 2
+ * Atom 1
+ * Atom 0.3 (treated as Atom 1)
+
+It has 2 interfaces - one for work with feeds, and the other one is to work with
+feed's items.
+
+Methods:
+* Feeds
+	- getTitle() - retrieve feed title
+	- getDescription() - retrieve feed description
+	- getItems() - retrieve feed items as array 
+	- getLink() - retrieve feed link (Link to feed website)
+	- getFeedLink() - retrieve feed link to itself
+	- getFeedType() - retrieve feed type as string
+* Items
+	- getTitle() - retrieve item title
+	- getContent() - retrieve item content as string
+	- getPubDate() - retrieve item publication date as PHP date
+	- getLink() - retrieve item link 
+
+
+
+	[[[::: History :::]]]
+
 I read a lot. I have about 100 RSS/Atom subscriptions, that i read every day.
 It helps me to have actual knowledge and have fun. All feeds i read in google 
 reader. However i didn’t like it much from the beginning because of small 
