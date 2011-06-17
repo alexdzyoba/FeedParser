@@ -19,31 +19,24 @@
 **************************************************************************/
 
 /**
- * @file RSS090.php
- * @brief RSS 0.90 classes.
+ * @file RDF.php
+ * @brief RSS RDF branch base classes.
  * 
- * Contains FeedParserRSS090 and FeedParserRSS090Element.
+ * Contains FeedParserRDF and FeedParserRDFElement.
  */
 
 /**
- * @brief Handles RSS 0.90 feeds. 
+ * @brief Base class for RDF branch feeds. 
  *
- * Here is a place where we get if in FeedParser we've detected that feed is 
- * RSS 0.90.
+ * This is the base class for RSS 0.90, RSS 1.0 and RSS 1.1. This feeds differs 
+ * only by namespace, so to avoid code copy-pasting we create base class with 
+ * all the methods
  *
- * RSS 0.90 is documented at http://www.rssboard.org/rss-0-9-0
- *
- * We have 2 main namespaces for that feeds.
- * - RDF : 'http://www.w3.org/1999/02/22-rdf-syntax-ns#
- * - RSS : 'http://my.netscape.com/rdf/simple/0.9/'
- *
- * First one is used for whole channel. Second is for the rest. 
- * 
  * This class implements IFeed interface.
  *
  * @author     Alex Dzyoba <finger@reduct.ru>
  */
-class FeedParserRSS090 extends FeedParser implements IFeed
+class FeedParserRDF extends FeedParser implements IFeed
 {
 	
     /**
@@ -57,10 +50,9 @@ class FeedParserRSS090 extends FeedParser implements IFeed
     private $xpathPrefix = '//';
 
     /**
-     * The feed type we are parsing 
+	 * The feed type we are parsing.
      */
-    private $feedType = 'RSS 0.9';
-
+    protected $feedType;
 
 	/**
 	 * Contains array of items
@@ -73,20 +65,23 @@ class FeedParserRSS090 extends FeedParser implements IFeed
      */
     protected $namespaces = array(
         'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-        'rss' => 'http://my.netscape.com/rdf/simple/0.9/',
         'dc' => 'http://purl.org/rss/1.0/modules/dc/',
         'content' => 'http://purl.org/rss/1.0/modules/content/',
         'sy' => 'http://web.resource.org/rss/1.0/modules/syndication/');
 
     /**
-     * Our constructor does nothing more than its parent.
+     * Our constructor does actually more than its parent. Besides creating 
+	 * xpath and DOMDocument objects it sets $feedType property to invoke proper 
+	 * subclass and adds correct RSS namespaces in $namespaces array
      * 
 	 * @param $xml
 	 *     A DOM object representing the feed
+	 * @param $type
+	 *     Type of RDF feed. Can be '0.90', '1.0' and '1.1' 
 	 * @param $strict
 	 *     (optional) Whether or not to validate this feed
      */
-	function __construct(DOMDocument $xml, $strict = false)
+	function __construct(DOMDocument $xml, $type, $strict = false)
 	{
         $this->model = $xml;
 
@@ -94,6 +89,25 @@ class FeedParserRSS090 extends FeedParser implements IFeed
 			if (! $this->relaxNGValidate())
 				throw new Exception('Failed required validation');
 
+		switch($type)
+		{
+			case '0.90':
+				$this->feedType = 'RSS 0.90';
+				$this->namespaces['rss'] = 'http://my.netscape.com/rdf/simple/0.9/';
+				break;
+			case '1.0':
+				$this->feedType = 'RSS 1.0';
+				$this->namespaces['rss'] = 'http://purl.org/rss/1.0/';
+				break;
+			case '1.1':
+				$this->feedType = 'RSS 1.1';
+				$this->namespaces['rss'] = 'http://purl.org/net/rss1.1#';
+				break;
+		}
+
+		echo '<pre>';
+		var_dump($this->namespaces);
+		echo '</pre>';
 
         $this->xpath = new DOMXPath($this->model);
 		foreach ($this->namespaces as $key => $value)
@@ -124,9 +138,9 @@ class FeedParserRSS090 extends FeedParser implements IFeed
 	}
 
 	/**
-	 * Return link that holds RSS1 feed itself.
+	 * Return link that holds RDF feed itself.
 	 * 
-	 * Unlike Atom feeds, RSS1 feeds don't have any special tag or anything else 
+	 * Unlike Atom feeds, RSS feeds don't have any special tag or anything else 
 	 * for that purpose.
 	 *
 	 * That's why we return empty string. In your application you should 
@@ -163,7 +177,7 @@ class FeedParserRSS090 extends FeedParser implements IFeed
 	}
 
 	/**
-	 * Return description for RSS1 feed. Description is containing in 
+	 * Return description for RDF feed. Description is containing in 
 	 * <description>. (IFeed interface implementation)
 	 *
 	 * @return 
@@ -186,8 +200,8 @@ class FeedParserRSS090 extends FeedParser implements IFeed
 	}
 
 	/**
-	 * Return type of feed. In this case we return $feedType constant containing 
-	 * string 'RSS 1.0'. (IFeed interface implementation)
+	 * Return type of feed. In this case we return $feedType constant 
+	 * string. (IFeed interface implementation)
 	 * 
 	 * @return 
 	 *     String with feed type
@@ -198,7 +212,7 @@ class FeedParserRSS090 extends FeedParser implements IFeed
 	}
 	
 	/**
-	 *	Fetch items from feed as array of FeedParserRSS1Element objects.
+	 *	Fetch items from feed as array of FeedParserRDFElement objects.
 	 *	
 	 *	The only reason why we don't keep it as property and fetch in 
 	 *	constructor is performance, i.e. if we only want to build list of feeds 
@@ -206,7 +220,7 @@ class FeedParserRSS090 extends FeedParser implements IFeed
 	 *	why we fetch it on demand
 	 *
 	 *	@return 
-	 *	    Array of FeedParserRSS090Element class instances
+	 *	    Array of FeedParserRDFElement class instances
 	 */
 	public function getItems()
 	{
@@ -218,32 +232,31 @@ class FeedParserRSS090 extends FeedParser implements IFeed
 		foreach($entries as $entry)
 		{
 			// We should make DOMDocument object from DOMNode object to pass it 
-			// to FeedParserRSS090Element constructor (otherwise there will be 
+			// to FeedParserRSS2Element constructor (otherwise there will be 
 			// fatal error despite DOMDocument extends from DOMNode)
 			$doc = new DOMDocument;
 			$doc->appendChild($doc->importNode($entry, TRUE));
 			
 			// Add to array new object representing entry
-			$items[] = new FeedParserRSS090Element($doc);
+			$items[] = new FeedParserRDFElement($doc, $this->feedType);
 		}
 
 		return $items;
 	}
 }
 
-
 /**
- * @brief Handles RSS 0.90 feed items. 
- 
- * This class represents RSS 0.90 <item> node. We make array of this class 
- * instances in FeedParserRSS090::getItems() .
+ * @brief Handles RDF feed items. 
+ *
+ * This class represents RDF <item> node, that holds items for RSS 0.90, RSS 
+ * 1.0, RSS 1.1. We make array of this class instances in 
+ * FeedParserRDF::getItems() .
  *
  * This class implements IItem interface.
  *
  * @author  Alex Dzyoba <finger@reduct.ru>
  */
-
-class FeedParserRSS090Element implements IItem
+class FeedParserRDFElement implements IItem
 {
 	/** 
 	 * Contains parsed XML document
@@ -256,27 +269,42 @@ class FeedParserRSS090Element implements IItem
      */
     protected $namespaces = array(
         'rdf' => 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-        'rss' => 'http://my.netscape.com/rdf/simple/0.9/',
         'dc' => 'http://purl.org/rss/1.0/modules/dc/',
         'content' => 'http://purl.org/rss/1.0/modules/content/',
         'sy' => 'http://web.resource.org/rss/1.0/modules/syndication/');
 
 	/**
 	 *	Constructor. It takes DOMDocument representing tree under <item> tag 
-	 *	and creates DOMXPath object for it.
+	 *	and creates DOMXPath object for it based on send $type
 	 *
 	 * @param $xml
 	 *     A DOM object representing the entry
+	 * @param $type
+	 *     Type of RDF feed. Can be '0.90', '1.0' and '1.1' 
 	 * @param $strict
 	 *     (optional) Whether or not to validate this feed
 	 */
-	function __construct(DOMDocument $xml, $strict = false)
+	function __construct(DOMDocument $xml, $type, $strict = false)
 	{
         $this->model = $xml;
 		
 		if ($strict)
 			if (! $this->relaxNGValidate())
 				throw new Exception('Failed required validation');
+		
+		switch($type)
+		{
+			case 'RSS 0.90':
+				$this->namespaces['rss'] = 'http://my.netscape.com/rdf/simple/0.9/';
+				break;
+			case 'RSS 1.0':
+				$this->namespaces['rss'] = 'http://purl.org/rss/1.0/';
+				break;
+			case 'RSS 1.1':
+				$this->namespaces['rss'] = 'http://purl.org/net/rss1.1#';
+				break;
+		}
+
 		
 		$this->xpath = new DOMXPath($this->model);
 		foreach ($this->namespaces as $key => $value)
@@ -333,12 +361,11 @@ class FeedParserRSS090Element implements IItem
 
 		if($items->length === 0)
 			return '';
-		else
-			return $items->item(0)->nodeValue;
+		return $items->item(0)->nodeValue;
 	}
 
 	/**
-	 * Get date of entry. Query over tree for <updated> and get content of tag
+	 * Get date of entry. Query over tree for <pubDate> and get content of tag
 	 *
 	 * @return 
 	 *     String with publication date
@@ -347,10 +374,10 @@ class FeedParserRSS090Element implements IItem
 	{
 		// We get date from <pubDate>
 		$items = $this->xpath->evaluate('//rss:pubDate');
+
 		if($items->length === 0)
 			return '';
-		else
-			return $items->item(0)->nodeValue;
+		return $items->item(0)->nodeValue;
 	}
 
 	/**
@@ -365,17 +392,8 @@ class FeedParserRSS090Element implements IItem
 		// We get date from <pubDate>
 		$items = $this->xpath->evaluate('//rss:link');
 
-		if(empty($items->item(0)->nodeValue))
-		{
-			return " ";
-		}
-
 		if($items->length === 0)
 			return '';
-		else
-			return $items->item(0)->nodeValue;
+		return $items->item(0)->nodeValue;
 	}
-	
 }	
-
-

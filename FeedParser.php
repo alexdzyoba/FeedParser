@@ -38,12 +38,11 @@
  * - RDF branch - RSS 0.90, RSS 1.0, RSS 1.1
  * - RSS branch - RSS 0.91, RSS 0.92, RSS 2.0
  *
- * For RSS branch we implement only one class FeedParserRSS2, because RSS 
+ * For RSS branch I implement only one class FeedParserRSS2, because RSS 
  * 0.91, 0.92 and 2.0 all have same tags and no XML namespace.
  *
- * For RDF branch we can't do this because each of them has own(!) 
- * default(!!) XML namespace. So we have to keep separate classes for RSS 0.90,
- * 1.0 and 1.1 
+ * For RDF branch I implement FeedParserRDF class, that handles all that crappy 
+ * stuff with XML namespaces (each of them has own(!) default(!!) XML namespace)
  *
  */
 class FeedParser 
@@ -115,9 +114,9 @@ class FeedParser
 			      && $doc_element->childNodes->item(1)->namespaceURI=='http://purl.org/rss/1.0/'
 				 )):
 
-				 require_once('RSS10.php');
+				 require_once('RDF.php');
 
-				 $this->feed = new FeedParserRSS10($this->model);
+				 $this->feed = new FeedParserRDF($this->model, '1.0');
 				 break;
 
 			// If we have root element namespace for RSS 1.1 or child node with
@@ -127,8 +126,9 @@ class FeedParser
 			      && $doc_element->childNodes->length > 1 
 			      && $doc_element->childNodes->item(1)->namespaceURI=='http://purl.org/rss/1.1/'
 				 )):
+				require_once('RDF.php');
 
-				$this->feed = new FeedParserRSS11($this->model);
+				$this->feed = new FeedParserRDF($this->model, '1.1');
 				break;
 
 			// If we have root element namespace for RSS 0.90 or child node with
@@ -139,9 +139,9 @@ class FeedParser
 			       && $doc_element->childNodes->item(1)->namespaceURI=='http://my.netscape.com/rdf/simple/0.9/'
 				  )):
 
-				  require_once('RSS090.php');
+				require_once('RDF.php');
 
-				$this->feed = new FeedParserRSS090($this->model);
+				$this->feed = new FeedParserRDF($this->model, '0.90');
 				break;
 
 			// If we have root element namespace for RSS 0.91 or child node with
