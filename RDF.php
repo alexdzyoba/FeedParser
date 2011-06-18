@@ -105,10 +105,6 @@ class FeedParserRDF extends FeedParser implements IFeed
 				break;
 		}
 
-		echo '<pre>';
-		var_dump($this->namespaces);
-		echo '</pre>';
-
         $this->xpath = new DOMXPath($this->model);
 		foreach ($this->namespaces as $key => $value)
             $this->xpath->registerNamespace($key, $value);
