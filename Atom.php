@@ -69,8 +69,9 @@ class FeedParserAtom extends FeedParser implements IFeed
 	 * @param $strict
 	 *     (optional) whether or not to validate this feed
      */
-    function __construct(DOMDocument $xml, bool $strict = false)
+    function __construct(DOMDocument $xml, $strict = false)
     {
+    	$strict=(bool)$strict;
         $this->model = $xml;
 
 		if ($strict)
