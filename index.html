@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Feedparser by dzeban</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Feedparser</h1>
+        <h2>Library for parsing RSS/Atom feeds</h2>
+        <a href="https://github.com/dzeban/FeedParser" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="feedparser" class="anchor" href="#feedparser" aria-hidden="true"><span class="octicon octicon-link"></span></a>FeedParser</h1>
+
+<p>FeedParser is a PHP library that handles all types of XML feeds. </p>
+
+<h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h2>
+
+<p>(Also, in feed.php)</p>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// The only thing we need is include base class file</span></span>
+<span class="pl-s1"><span class="pl-k">require_once</span>(<span class="pl-s"><span class="pl-pds">'</span>FeedParser.php<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Get XML serialization of feed</span></span>
+<span class="pl-s1"><span class="pl-smi">$xml</span> <span class="pl-k">=</span> <span class="pl-c1">file_get_contents</span>(<span class="pl-smi">$_POST</span>[<span class="pl-s"><span class="pl-pds">'</span>filename<span class="pl-pds">'</span></span>]);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// This is great. To work with feed we invoke only base class. All other work is </span></span>
+<span class="pl-s1"><span class="pl-c">// transparent.</span></span>
+<span class="pl-s1"><span class="pl-smi">$feed</span> <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-c1">FeedParser</span>(<span class="pl-smi">$xml</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">//Because we have interface for feeds, we invoke interface methods</span></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;b&gt;Type:&lt;/b&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$feed</span><span class="pl-k">-&gt;</span>getFeedType()<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;br/&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;b&gt;Title:&lt;/b&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$feed</span><span class="pl-k">-&gt;</span>getTitle()<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;br/&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;b&gt;Description:&lt;/b&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$feed</span><span class="pl-k">-&gt;</span>getDescription()<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;br/&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;b&gt;Feed link:&lt;/b&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$feed</span><span class="pl-k">-&gt;</span>getFeedLink()<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;br/&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;b&gt;Link:&lt;/b&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$feed</span><span class="pl-k">-&gt;</span>getLink()<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;br/&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$items</span> <span class="pl-k">=</span> <span class="pl-smi">$feed</span><span class="pl-k">-&gt;</span>getItems();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">// Stuff in your items can be empty, so you should somehow handle it.</span></span>
+<span class="pl-s1"><span class="pl-c">// I've prepared is_empty function for you - enjoy.</span></span>
+<span class="pl-s1"><span class="pl-smi">$i</span><span class="pl-k">=</span><span class="pl-c1">1</span>;</span>
+<span class="pl-s1"><span class="pl-k">foreach</span>(<span class="pl-smi">$items</span> <span class="pl-k">as</span> <span class="pl-smi">$item</span>)</span>
+<span class="pl-s1">{</span>
+<span class="pl-s1">    <span class="pl-c">//Because we have interface for items, we invoke interface methods</span></span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;h1&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    <span class="pl-k">if</span>(is_empty(<span class="pl-smi">$item</span><span class="pl-k">-&gt;</span>getLink()))</span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;a href="#"&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">    <span class="pl-k">else</span></span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;a href="<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$item</span><span class="pl-k">-&gt;</span>getLink()<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>"&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">if</span>(is_empty(<span class="pl-smi">$item</span><span class="pl-k">-&gt;</span>getTitle()))</span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>No title<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    <span class="pl-k">else</span></span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$i</span>. <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$item</span><span class="pl-k">-&gt;</span>getTitle();</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;/a&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;/h1&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">if</span>(is_empty(<span class="pl-smi">$item</span><span class="pl-k">-&gt;</span>getPubDate()))</span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;i&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>No date<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/i&gt;&lt;br/&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    <span class="pl-k">else</span></span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;i&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$item</span><span class="pl-k">-&gt;</span>getPubDate()<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/i&gt;&lt;br/&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">if</span>(is_empty(<span class="pl-smi">$item</span><span class="pl-k">-&gt;</span>getContent()))</span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;i&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>No content<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/i&gt;&lt;br/&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    <span class="pl-k">else</span></span>
+<span class="pl-s1">        <span class="pl-c1">echo</span> <span class="pl-smi">$item</span><span class="pl-k">-&gt;</span>getContent()<span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;hr/&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-smi">$i</span><span class="pl-k">++</span>;</span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"></span><span class="pl-pse"><span class="pl-s1">?</span>&gt;</span></pre></div>
+
+<h2>
+<a id="features-and-api" class="anchor" href="#features-and-api" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features and API</h2>
+
+<p>It supports:</p>
+
+<ul>
+<li>RSS 0.90</li>
+<li>RSS 1.0</li>
+<li>RSS 1.1</li>
+<li>RSS 0.91</li>
+<li>RSS 0.92</li>
+<li>RSS 2</li>
+<li>Atom 1</li>
+<li>Atom 0.3 (treated as Atom 1)</li>
+</ul>
+
+<p>It has 2 interfaces - one for work with feeds, and the other one is to work with
+feed's items.</p>
+
+<p>Methods:</p>
+
+<ul>
+<li>Feeds
+
+<ul>
+<li>
+<code>getTitle()</code> - retrieve feed title</li>
+<li>
+<code>getDescription()</code> - retrieve feed description</li>
+<li>
+<code>getItems()</code> - retrieve feed items as array </li>
+<li>
+<code>getLink()</code> - retrieve feed link (Link to feed website)</li>
+<li>
+<code>getFeedLink()</code> - retrieve feed link to itself</li>
+<li>
+<code>getFeedType()</code> - retrieve feed type as string</li>
+</ul>
+</li>
+<li>Items
+
+<ul>
+<li>
+<code>getTitle()</code> - retrieve item title</li>
+<li>
+<code>getContent()</code> - retrieve item content as string</li>
+<li>
+<code>getPubDate()</code> - retrieve item publication date as PHP date</li>
+<li>
+<code>getLink()</code> - retrieve item link </li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a id="history" class="anchor" href="#history" aria-hidden="true"><span class="octicon octicon-link"></span></a>History</h2>
+
+<p>I read a lot. I have about 100 RSS/Atom subscriptions, that i read every day.
+It helps me to have actual knowledge and have fun. All feeds i read in google 
+reader. However i didn’t like it much from the beginning because of small 
+viewport. If you open google reader on small 1024×600 netbook screen you’ll 
+understand what i’m talking about. For example, it’s really impossible to 
+view photos.</p>
+
+<p>That’s why i’ve decided to write my own reader and get practice in PHP/Yii.</p>
+
+<p>So, if you want to read RSS/Atom, you have to parse it somehow. At first i 
+wanted to use something already done and found XML_Feed_Parser library by 
+James Stewart at PEAR. I’ve tried to fit it under my code, but despite all 
+benefits, it wasn’t so “unified” as it was told in description. And 
+that’s why I wrote my own library, based on James's work.</p>
+
+<p>Source code distributed under terms of LGPLv3. </p>
+
+<p>If you have any questions, suggestions or anything else – write me email to 
+<a href="mailto:alex.dzyoba@gmail.com">alex.dzyoba@gmail.com</a> or ask through github.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/dzeban/FeedParser/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/dzeban/FeedParser/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/dzeban/FeedParser"></a> is maintained by <a href="https://github.com/dzeban">dzeban</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
