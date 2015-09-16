@@ -117,8 +117,7 @@ James Stewart at PEAR. I’ve tried to fit it under my code, but despite all
 benefits, it wasn’t so “unified” as it was told in description. And 
 that’s why I wrote my own library, based on James's work.
 
-Source code distributed under terms of LGPLv3. Documentation for sources, made
-with help of doxygen, you can see at http://finger.reduct.ru/FeedParserDocs
+Source code distributed under terms of LGPLv3. 
 
 If you have any questions, suggestions or anything else – write me email to 
-finger@reduct.ru or ask through github.
+alex.dzyoba@gmail.com or ask through github.
