@@ -1,11 +1,76 @@
->>>>>  Example of usage in feed.php file
-
-
-	[[[::: About :::]]]
+FeedParser
+==========
 
 FeedParser is a PHP library that handles all types of XML feeds. 
 
+Example
+-------
+
+(Also, in feed.php)
+
+```php
+<?php
+
+// The only thing we need is include base class file
+require_once('FeedParser.php');
+
+// Get XML serialization of feed
+$xml = file_get_contents($_POST['filename']);
+
+// This is great. To work with feed we invoke only base class. All other work is 
+// transparent.
+$feed = new FeedParser($xml);
+
+//Because we have interface for feeds, we invoke interface methods
+echo '<b>Type:</b>'.$feed->getFeedType()."<br/>";
+echo '<b>Title:</b>'.$feed->getTitle()."<br/>";
+echo '<b>Description:</b>'.$feed->getDescription()."<br/>";
+echo '<b>Feed link:</b>'.$feed->getFeedLink()."<br/>";
+echo '<b>Link:</b>'.$feed->getLink()."<br/>";
+
+$items = $feed->getItems();
+
+// Stuff in your items can be empty, so you should somehow handle it.
+// I've prepared is_empty function for you - enjoy.
+$i=1;
+foreach($items as $item)
+{
+	//Because we have interface for items, we invoke interface methods
+	echo "<h1>";
+	if(is_empty($item->getLink()))
+		echo '<a href="#">';
+	else
+		echo '<a href="'.$item->getLink().'">';
+
+	if(is_empty($item->getTitle()))
+		echo "No title";
+	else
+		echo "$i. ".$item->getTitle();
+	echo "</a>";
+
+	echo "</h1>";
+
+	if(is_empty($item->getPubDate()))
+		echo "<i>"."No date"."</i><br/>";
+	else
+		echo "<i>".$item->getPubDate()."</i><br/>";
+
+	if(is_empty($item->getContent()))
+		echo "<i>"."No content"."</i><br/>";
+	else
+		echo $item->getContent()."<hr/>";
+
+	$i++;
+}
+
+?>
+```
+
+Features and API
+----------------
+
 It supports:
+
  * RSS 0.90
  * RSS 1.0
  * RSS 1.1
@@ -19,22 +84,23 @@ It has 2 interfaces - one for work with feeds, and the other one is to work with
 feed's items.
 
 Methods:
+
 * Feeds
-	- getTitle() - retrieve feed title
-	- getDescription() - retrieve feed description
-	- getItems() - retrieve feed items as array 
-	- getLink() - retrieve feed link (Link to feed website)
-	- getFeedLink() - retrieve feed link to itself
-	- getFeedType() - retrieve feed type as string
+	- `getTitle()` - retrieve feed title
+	- `getDescription()` - retrieve feed description
+	- `getItems()` - retrieve feed items as array 
+	- `getLink()` - retrieve feed link (Link to feed website)
+	- `getFeedLink()` - retrieve feed link to itself
+	- `getFeedType()` - retrieve feed type as string
 * Items
-	- getTitle() - retrieve item title
-	- getContent() - retrieve item content as string
-	- getPubDate() - retrieve item publication date as PHP date
-	- getLink() - retrieve item link 
+	- `getTitle()` - retrieve item title
+	- `getContent()` - retrieve item content as string
+	- `getPubDate()` - retrieve item publication date as PHP date
+	- `getLink()` - retrieve item link 
 
 
-
-	[[[::: History :::]]]
+History
+-------
 
 I read a lot. I have about 100 RSS/Atom subscriptions, that i read every day.
 It helps me to have actual knowledge and have fun. All feeds i read in google 
@@ -56,4 +122,3 @@ with help of doxygen, you can see at http://finger.reduct.ru/FeedParserDocs
 
 If you have any questions, suggestions or anything else – write me email to 
 finger@reduct.ru or ask through github.
-
